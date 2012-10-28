@@ -1,8 +1,9 @@
 use Test::More;
-use IPC::Run qw/ run timeout /;
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+use CmdExec;
 
-my $cmd = $ENV{CURSE_PERL_CMD} || './grep.pl';
-
+my $cmd = command_path();
 
 ok (-e $cmd, "File '$cmd' exists");
 ok (-x $cmd, "File '$cmd' is executable");
@@ -31,12 +32,3 @@ subtest 'Run command with -h option' => sub {
 
 done_testing;
 
-sub run_command {
-    my $this_cmd = join ' ', $cmd, @_;
-    diag("Running command $this_cmd");
-    my ($in, $out, $err, $exit);
-    run [ $cmd, @_ ], \$in, \$out, \$err;
-    $exit = $?;
-
-    return ($in, $out, $err, $exit);
-}
