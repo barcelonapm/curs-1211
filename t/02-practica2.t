@@ -24,7 +24,7 @@ sub test_help {
     my ($in, $out, $err, $exit) = run_command(@_);
     subtest 'Run command with ' . (join ' ', @_) => sub {
         is   ($err, '', "There is no output on STDERR");
-        like ($out, qr/\s--help/m, "Help says something about '-h'");
+        like ($out, qr/\s--help/m, "Help says something about '--help'");
         like ($out, qr/\s-V/m, "Help says something about '-V'");
         is   ($exit, 0, "Exit code is 0");
     };
