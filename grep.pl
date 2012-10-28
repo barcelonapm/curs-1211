@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 #
-# 
+# TODO: Cabezera bonita.
 #
 
 my $VERSION = "0.1";
@@ -12,4 +12,30 @@ if (@ARGV == 0) {
 	print STDERR "Try -h to see available options.\n";
 	exit -1;
 }
+#fas un for i vas iterant o
+#fas un while fent pops
 
+for my $opt (@ARGV) {
+	if ("-h" eq $opt) {
+		# Print help message.
+		print <<'EOF';
+usage:    grep.pl options pattern
+options:
+          -V   Prints version.
+          -h   Prints this help.
+patter:   Text to search.
+EOF
+		exit 0;
+	}
+	elsif ("-V" eq $opt) {
+		print "$HEADER\n";
+		exit 0;
+	}
+	elsif ("-" eq substr($opt,0,1)) {
+		print STDERR "Invaid option $opt!\n";
+#		exit 1;
+	}
+	else {
+		#TODO
+	}
+}
