@@ -21,12 +21,9 @@ EOF
 };
 
 subtest 'Run command with --help option' => sub {
-    my ($in, $out, $err, $exit) = run_command('-h');
-    unlike ($err, qr/VERSION/, "Error not contains 'VERSION' string");
-    unlike ($err, qr/\d\.\d/, "Error not contains VERSION");
-    unlike ($err, qr/\bone parameter\b/, "Error not contains 'one parameter'");
-    unlike ($err, qr/\s-h\s.*\n/, "Error not contains -h advice");
-    is   ($exit, 0, "Exit code is 0 now");
+    my ($in, $out, $err, $exit) = run_command('--help');
+    is ($err, '', "No output in STDERR");
+    is ($exit, 0, "Exit code is 0 now");
 };
 
 done_testing;
