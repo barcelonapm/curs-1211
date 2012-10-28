@@ -20,17 +20,20 @@ while (defined $opt && substr($opt, 0, 1) eq '-'){
 }
 
 if ($args{'-V'}){
-    print "$0 Version 2.10\n";
+    print "grep Version 2.10\n";
     exit 0;
 }
 if ($args{'--help'}){
-    print "Usage: $0 [OPTION]... PATTERN [FILE]...\nSearch for PATTERN\n".
+    print "Usage: grep [OPTION]... PATTERN [FILE]...\nSearch for PATTERN\n".
           "--help usage information\n".
           "-V version info\n";
     exit 0;
 }
 
 if (not @ARGV) {
-    print STDERR "Usage: grep [OPTION]... PATTERN ...\nTry `grep --help' for more information. \n";
+    print STDERR "Usage: grep [OPTION]... PATTERN [FILE]... \nTry `grep --help' for more information. \n";
     exit 1;
+}
+while (my $line = <>){
+    if (index($opt,$line)) {print $line;}
 }
