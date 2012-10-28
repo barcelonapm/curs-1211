@@ -11,17 +11,16 @@ ok (-x $cmd, "File '$cmd' is executable");
 subtest 'Run command without options' => sub {
     my ($in, $out, $err, $exit) = run_command();
 
-    ok($err, "There is output on STDERR");
-
-    like ($err, qr/$cmd/, "Error contains '$cmd' string");
-    like ($err, qr/VERSION/, "Error contains 'VERSION' string");
-    like ($err, qr/\d\.\d/, "Error contains VERSION");
-    like ($err, qr/\bone parameter\b/, "Error contains 'one parameter'");
-    like ($err, qr/\s-h\s.*\n/, "Error contains -h advice");
+    ok ($err, "There is output on STDERR");
+    my $output = <<EOF;
+Usage: grep [OPTION]... PATTERN [FILE]...
+Try `grep --help' for more information.
+EOF
+    is ($err, $output, "Error message ok");
     isnt ($exit, 0, "Exit code is not 0");
 };
 
-subtest 'Run command with -h option' => sub {
+subtest 'Run command with --help option' => sub {
     my ($in, $out, $err, $exit) = run_command('-h');
     unlike ($err, qr/VERSION/, "Error not contains 'VERSION' string");
     unlike ($err, qr/\d\.\d/, "Error not contains VERSION");
