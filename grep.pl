@@ -7,16 +7,15 @@ my %validoptions = (
 
 my %args;
 
-my $opt = shift @ARGV;
 
-while (defined $opt && substr($opt, 0, 1) eq '-'){
-    if (not exists $validoptions{ $opt }){
-        print STDERR "grep: unrecognized option '$opt'\n";
+while (substr($ARGV[0], 0, 1) eq '-'){
+    if (not exists $validoptions{ $ARGV[0] }){
+        print STDERR "$0: unrecognized option '$ARGV[0]'\n";
         exit 1;
     } else {
-        $args{ $opt } = 1;
+        $args{ $ARGV[0] } = 1;
+        shift @ARGV
     }
-    $opt = shift @ARGV;
 }
 
 if ($args{'-V'}){
@@ -24,16 +23,22 @@ if ($args{'-V'}){
     exit 0;
 }
 if ($args{'--help'}){
-    print "Usage: grep [OPTION]... PATTERN [FILE]...\nSearch for PATTERN\n".
+    print "Usage: $0 [OPTION]... PATTERN [FILE]...\nSearch for PATTERN\n".
           "--help usage information\n".
           "-V version info\n";
     exit 0;
 }
 
 if (not @ARGV) {
-    print STDERR "Usage: grep [OPTION]... PATTERN [FILE]... \nTry `grep --help' for more information. \n";
+    print STDERR <<EOF;
+Usage: $0 [OPTION]... PATTERN [FILE]...
+Try `$0 --help' for more information.
+EOF
     exit 1;
 }
-while (my $line = <>){
-    if (index($opt,$line)) {print $line;}
+my $pattern = shift @ARGV;
+my $found=1;
+while (my $line = <STDIN>){
+    if (0 <= index($line,$pattern)) {$found = 0; print $line;}
 }
+exit $found;
