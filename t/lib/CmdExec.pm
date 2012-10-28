@@ -6,20 +6,29 @@ use IPC::Run qw/ run timeout /;
 
 require Exporter;
 our @ISA    = qw/ Exporter /;
-our @EXPORT = qw/ run_command command_path /;
+our @EXPORT = qw/ run_command command_path run_with_input /;
 
 my $cmd = $ENV{CURSPERL_CMD} || './grep.pl';
 
 sub command_path { $cmd }
 
 sub run_command {
-    my $this_cmd = join ' ', $cmd, @_;
-    #diag "Running command $this_cmd";
+
     my ($in, $out, $err, $exit);
     run [ $cmd, @_ ], \$in, \$out, \$err;
     $exit = $?;
 
     return ($in, $out, $err, $exit);
+}
+
+sub run_with_input {
+    my ($args, @input) = @_;
+
+    my ($out, $err, $exit);
+    run [ $cmd, @$args ], @input, \$out, \$err;
+    $exit = $?;
+
+    return (undef, $out, $err, $exit);
 }
 
 1;
