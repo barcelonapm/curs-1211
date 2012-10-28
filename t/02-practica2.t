@@ -4,13 +4,10 @@ use CmdExec;
 use Test::More;
 
 test_version( '-V' );
-test_help   ( '-h' );
+test_help   ( '--help' );
 
-test_version( '-h', '-V' );
-test_help   ( '-h', '-V' );
-
-test_version( '-V', '-h' );
-test_help   ( '-V', '-h' );
+test_version( '--help', '-V' );
+test_version( '-V', '--help' );
 
 
 ($in, $out, $err, $exit) = run_command('-x');
@@ -27,9 +24,8 @@ sub test_help {
     my ($in, $out, $err, $exit) = run_command(@_);
     subtest 'Run command with ' . (join ' ', @_) => sub {
         is   ($err, '', "There is no output on STDERR");
-        ok   ($out, "There is output in STDOUT");
-        like ($out, qr/-h/m, "Help says something about '-h'");
-        like ($out, qr/-V/m, "Help says something about '-V'");
+        like ($out, qr/\s--help\s/m, "Help says something about '-h'");
+        like ($out, qr/\s-V\s/m, "Help says something about '-V'");
         is   ($exit, 0, "Exit code is 0");
     };
 }
