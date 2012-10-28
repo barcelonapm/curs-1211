@@ -1,0 +1,8 @@
+1. Tipus de dades i operadors
+ * Escalars
+ * Operadors: concatenació d’strings, comparació
+ * Arrays: @ARGV, número d’elements d’un array
+ * STDERR, STDOUT
+ * Funcions: print, exit
+ * Control de flux: if
+ * Estructures de dades i subrutines
