@@ -5,6 +5,7 @@
 
 my $VERSION = "0.1";
 my $HEADER = "$0 "."VERSION ".$VERSION;
+my $WARNING = "Invalid option";
 
 if (@ARGV == 0) {
 	print STDERR "$HEADER\n";
@@ -14,9 +15,12 @@ if (@ARGV == 0) {
 }
 #fas un for i vas iterant o
 #fas un while fent pops
-
 for my $opt (@ARGV) {
-	if ("-h" eq $opt) {
+	if ("-V" eq $opt) {
+		print "$HEADER\n";
+		exit 0;
+	}
+	elsif ("-h" eq $opt) {
 		# Print help message.
 		print <<'EOF';
 usage:    grep.pl options pattern
@@ -27,12 +31,8 @@ patter:   Text to search.
 EOF
 		exit 0;
 	}
-	elsif ("-V" eq $opt) {
-		print "$HEADER\n";
-		exit 0;
-	}
 	elsif ("-" eq substr($opt,0,1)) {
-		print STDERR "Invaid option $opt!\n";
+		print STDERR "$WARNING $opt!\n";
 #		exit 1;
 	}
 	else {
