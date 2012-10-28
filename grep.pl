@@ -18,7 +18,7 @@ if (@ARGV == 0) {
 for my $opt (@ARGV) {
 	if ("-V" eq $opt) {
 		print "$HEADER\n";
-		exit 0;
+#		exit 0;
 	}
 	elsif ("-h" eq $opt) {
 		# Print help message.
@@ -29,11 +29,11 @@ options:
           -h   Prints this help.
 patter:   Text to search.
 EOF
-		exit 0;
+#		exit 0;
 	}
 	elsif ("-" eq substr($opt,0,1)) {
 		print STDERR "$WARNING $opt!\n";
-#		exit 1;
+		exit 1;
 	}
 	else {
 		#TODO
