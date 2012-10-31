@@ -4,14 +4,6 @@ use CmdExec;
 use Test::More;
 use File::Slurp;
 
-
-if (not '') {
-    print "true\n";
-} else {
-    print "false\n";
-}
-
-
 my ($in, $out, $err, $exit) = run_with_input(['-P', 'xxx'], \'asdf');
 subtest 'Option -P is accepted' => sub {
     ok((not $err), 'No error with -P option');
