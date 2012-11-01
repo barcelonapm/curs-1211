@@ -12,7 +12,7 @@ subtest 'Option -P is accepted' => sub {
 
 subtest 'Option -n' => sub {
     my $input = read_file("$Bin/test_data/data01");
-    my ($in, $out, $err, $exit) = run_with_input(['-n', '570'], \$input);
+    my ($in, $out, $err, $exit) = run_with_input(['-n', '570'], $input);
 
     ok((not $err), 'No error with -n option');
 
