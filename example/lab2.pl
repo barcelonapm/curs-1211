@@ -1,37 +1,44 @@
 #!/usr/bin/env perl
 
+# lab2.pl - Example implementation for perl curs second practice.
+
+# Prepare help message to be user around
+my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
+my $usage_options = << "USAGE";
+--help usage information
+-V version info
+USAGE
+my $usage_advice = "Try `$0 --help' for more information.\n";
+
+# Getting allowed options
+my %args;
 my %validoptions = (
   '-V' => 'Version 1',
   '--help' => 'Help',
 );
 
-my %args;
-
-my $opt = shift @ARGV;
-
-while (defined $opt && substr($opt, 0, 1) eq '-'){
-    if (not exists $validoptions{ $opt }){
-        print STDERR "grep: unrecognized option '$opt'\n";
+while (substr($ARGV[0], 0, 1) eq '-'){
+    if (not exists $validoptions{ $ARGV[0] }){
+        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
+                     $usage, $usage_advice;
         exit 1;
     } else {
-        $args{ $opt } = 1;
+        $args{ $ARGV[0] } = 1;
+        shift @ARGV
     }
-    $opt = shift @ARGV;
 }
 
+# Reading and using options
 if ($args{'-V'}){
     print "grep Version 2.10\n";
     exit 0;
 }
 if ($args{'--help'}){
-    print "Usage: grep [OPTION]... PATTERN [FILE]...\nSearch for PATTERN\n".
-          "--help usage information\n".
-          "-V version info\n";
+    print $usage, $usage_options;
     exit 0;
 }
 
 if (not @ARGV) {
-    print STDERR "Usage: grep [OPTION]... PATTERN [FILE]...\nTry `grep --help' for more information.\n";
+    print STDERR $usage, $usage_advice;
     exit 1;
 }
-

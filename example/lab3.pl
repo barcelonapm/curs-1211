@@ -1,13 +1,6 @@
 #!/usr/bin/env perl
 
-# grep.pl - Example implementation for perl curs
-
-# Getting allowed options
-my %args;
-my %validoptions = (
-  '-V' => 'Version 1',
-  '--help' => 'Help',
-);
+# lab3.pl - Example implementation for perl curs third practice.
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -16,6 +9,13 @@ my $usage_options = << "USAGE";
 -V version info
 USAGE
 my $usage_advice = "Try `$0 --help' for more information.\n";
+
+# Getting allowed options
+my %args;
+my %validoptions = (
+  '-V' => 'Version 1',
+  '--help' => 'Help',
+);
 
 while (substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
