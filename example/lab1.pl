@@ -6,8 +6,15 @@
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
 my $usage_advice = "Try `$0 --help' for more information.\n";
 
-if (@ARGV == 0) {
+# Reading and using options
+if ( @ARGV == 0 ) {
 	print STDERR $usage, $usage_advice;
 	exit -1;
+}
+elsif ( $ARGV[0] eq '--help' ) {
+	print $usage;
+}
+else {
+	exit 1;
 }
 
