@@ -10,7 +10,7 @@ test_version( '--help', '-V' );
 test_version( '-V', '--help' );
 
 my $invalid_opt = '--no-valid-option';
-($in, $out, $err, $exit) = run_command($invalid_opt);
+my ($in, $out, $err, $exit) = run_command($invalid_opt);
 subtest 'Run command with invalid option' => sub {
     ok   ($err, "There is output in STDERR");
     like ($err, qr/unrecognized option/m, "Error says 'unrecognized option'");
