@@ -9,9 +9,18 @@ my %validoptions = (
   '--help' => 'Help',
 );
 
+# Prepare help message to be user around
+my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
+my $usage_options = << "USAGE";
+--help usage information
+-V version info
+USAGE
+my $usage_advice = "Try `$0 --help' for more information.\n";
+
 while (substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
-        print STDERR "$0: unrecognized option '$ARGV[0]'\n";
+        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
+                     $usage, $usage_advice;
         exit 1;
     } else {
         $args{ $ARGV[0] } = 1;
@@ -25,17 +34,12 @@ if ($args{'-V'}){
     exit 0;
 }
 if ($args{'--help'}){
-    print "Usage: $0 [OPTION]... PATTERN [FILE]...\nSearch for PATTERN\n".
-          "--help usage information\n".
-          "-V version info\n";
+    print $usage, $usage_options;
     exit 0;
 }
 
 if (not @ARGV) {
-    print STDERR <<EOF;
-Usage: $0 [OPTION]... PATTERN [FILE]...
-Try `$0 --help' for more information.
-EOF
+    print STDERR $usage, $usage_advice;
     exit 1;
 }
 
