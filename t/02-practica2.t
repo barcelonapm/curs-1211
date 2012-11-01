@@ -1,7 +1,7 @@
 use FindBin qw/$Bin/;
 use lib "$Bin/lib";
 use CmdExec;
-use Test::More tests => 5;
+use Test::More ;
 
 test_version( '-V' );
 test_help   ( '--help' );

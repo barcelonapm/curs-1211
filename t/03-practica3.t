@@ -1,7 +1,7 @@
 use FindBin qw/$Bin/;
 use lib "$Bin/lib";
 use CmdExec;
-use Test::More tests => 2;
+use Test::More ;
 
 use File::Slurp;
 my $input = read_file("$Bin/test_data/data01");
