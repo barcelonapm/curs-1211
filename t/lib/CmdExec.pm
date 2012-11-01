@@ -8,9 +8,19 @@ require Exporter;
 our @ISA    = qw/ Exporter /;
 our @EXPORT = qw/ run_command command_path run_with_input /;
 
-my $cmd = $ENV{CURSPERL_CMD} || './grep.pl';
+my $cmd = $ENV{CURSPERL_CMD} || _find_command_path();
 
 sub command_path { $cmd }
+sub _find_command_path {
+    if ( -f './grep.pl' ) {
+        return './grep.pl';
+    }
+    else {
+        my ($lab_number) = $0 =~ /practica(\d+)/;
+        say $lab_number;
+        return "./example/lab$lab_number.pl";
+    }
+}
 
 sub run_command {
 
