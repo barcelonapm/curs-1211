@@ -33,5 +33,19 @@ subtest 'Run command with argument' => sub {
     isnt($exit, 0, "Exit code is not 0");
 };
 
+subtest 'Run command with unknown option --foobar' => sub {
+    my  ($in, $out, $err, $exit) = run_command('--foobar');
+
+    ok ($err, "There is output on STDERR");
+    my $output = <<EOF;
+$cmd: unrecognized option '--foobar'
+Usage: $cmd [OPTION]... PATTERN [FILE]...
+Try `$cmd --help' for more information.
+EOF
+    is  ($err, $output, "Error message ok");
+    is  ($out, '', "No output in STDOUT");
+    isnt($exit, 0, "Exit code is not 0");
+};
+
 done_testing;
 
