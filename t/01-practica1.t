@@ -28,8 +28,8 @@ subtest 'Run command with --help option' => sub {
 
 subtest 'Run command with argument' => sub {
     my  ($in, $out, $err, $exit) = run_with_input(['xxxxxx'], '');
-    is  ($err, undef, "No output in STDERR");
-    is  ($out, undef, "No output in STDOUT");
+    is  ($err, '', "No output in STDERR");
+    is  ($out, '', "No output in STDOUT");
     isnt($exit, 0, "Exit code is not 0");
 };
 
