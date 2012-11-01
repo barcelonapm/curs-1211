@@ -42,3 +42,6 @@ if (not @ARGV) {
     print STDERR $usage, $usage_advice;
     exit 1;
 }
+
+# Failing anyway since we do not know how to look for pattern yet
+exit 1;
