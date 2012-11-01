@@ -22,10 +22,12 @@ sub run_command {
 }
 
 sub run_with_input {
-    my ($args, @input) = @_;
+    my ($args, $input) = @_;
+
+    #$SIG{'PIPE'} = 'IGNORE';
 
     my ($out, $err, $exit);
-    run [ $cmd, @$args ], @input, \$out, \$err;
+    run [ $cmd, @$args ], \$input, \$out, \$err;
     $exit = $?;
 
     return (undef, $out, $err, $exit);
