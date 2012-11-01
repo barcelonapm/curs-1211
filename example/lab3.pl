@@ -4,18 +4,18 @@
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
-my $usage_options = << "USAGE";
---help usage information
--V version info
-USAGE
 my $usage_advice = "Try `$0 --help' for more information.\n";
 
 # Getting allowed options
-my %args;
+my (%args, $usage_options);
 my %validoptions = (
-  '-V' => 'Version 1',
-  '--help' => 'Help',
+  '--help' => 'usage information',
+  '-V' => 'version info',
+  '-c' => 'only print a count of matching lines per FILE',
 );
+for my $opt ( '--help', '-V', '-c' ) {
+    $usage_options .= "$opt $validoptions{$opt}\n";
+}
 
 while (substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
@@ -47,9 +47,14 @@ if (not @ARGV) {
 my $pattern = shift @ARGV;
 
 # All ready!, starting to filter input
-my $found=1;
+my $found=0;
 while (my $line = <STDIN>){
-    if (0 <= index($line,$pattern)) {$found = 0; print $line;}
+    if (0 <= index($line,$pattern)) {
+        $found++; 
+        print $line unless $args{'-c'};
+    }
 }
-exit $found;
 
+print "$found\n" if $args{'-c'};
+
+exit !$found;
