@@ -2,7 +2,7 @@ package CmdExec;
 use strict;
 use v5.10;
 use IPC::Run3;
-#use Test::More;
+use Test::More;
 
 require Exporter;
 our @ISA    = qw/ Exporter /;
@@ -16,10 +16,13 @@ sub _find_command_path {
         return './grep.pl';
     }
     else {
-        my ($lab_number) = $0 =~ /practica(\d+)/;
-        say $lab_number;
-        return "./example/lab$lab_number.pl";
+        my ($lab_number) = $0 =~ /lab(\d+)/;
+        my $cmd = "./example/lab$lab_number.pl";
+        BAIL_OUT("Example file '$cmd' not found!") unless -f $cmd;
+        return $cmd;
     }
+
+    die "Can't extract practice number from test file name!";
 }
 
 sub run_command {

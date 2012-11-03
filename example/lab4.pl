@@ -12,8 +12,10 @@ my %validoptions = (
   '--help' => 'usage information',
   '-V' => 'version info',
   '-c' => 'only print a count of matching lines per FILE',
+  '-n' => 'print line number with output lines',
+  '-P' => 'PATTERN is a Perl regular expression',
 );
-for my $opt ( '--help', '-V', '-c' ) {
+for my $opt ( '--help', '-V', '-c', '-n', '-P' ) {
     $usage_options .= "$opt $validoptions{$opt}\n";
 }
 
@@ -51,6 +53,7 @@ my $found=0;
 while (my $line = <STDIN>){
     if (0 <= index($line,$pattern)) {
         $found++; 
+        $line = "$.:". $line if $args{'-n'};
         print $line unless $args{'-c'};
     }
 }
