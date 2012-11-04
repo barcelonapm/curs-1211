@@ -27,4 +27,10 @@ EOF
     is($out, $exp, "option -n shows line number before line");
 };
 
+subtest 'Grep.pm is correctly defined' => sub {
+    my $module = 'Grep';
+    use_ok($module);
+    can_ok( $module, 'scan_input' );
+};
+
 done_testing;
