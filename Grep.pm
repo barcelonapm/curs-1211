@@ -20,7 +20,7 @@ sub scan_input {
 sub match_line {
     my ( $line_nr, $line_text, $callback ) = @_;
 
-    # if $callback returns true with $line_text
+    # if $callback returns non-empty array with $line_text
     # return: hashref with keys match, text, line_nr
 
     # return undef otherwise
