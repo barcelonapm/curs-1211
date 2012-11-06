@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
-# lab3.pl - Example implementation for perl curs third practice.
+# lab4.pl - Example implementation for perl curs 4th lab.
+
+use lib 'example/lib4';
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -48,15 +50,14 @@ if (not @ARGV) {
 # Getting nexta parameter, PATTERN.
 my $pattern = shift @ARGV;
 
+# TODO: describe matching callback
+my $cb = sub { do_somethin_with($pattern) };
+
 # All ready!, starting to filter input
-my $found=0;
-while (my $line = <STDIN>){
-    if (0 <= index($line,$pattern)) {
-        $found++; 
-        $line = "$.:". $line if $args{'-n'};
-        print $line unless $args{'-c'};
-    }
-}
+my @matches = scan_input( \*STDIN, $cb );
+
+# TODO: use @matches to count
+my $found = count_line_matches(@matches);
 
 print "$found\n" if $args{'-c'};
 
