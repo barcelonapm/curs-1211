@@ -4,7 +4,7 @@
 
 use FindBin qw($Bin);
 use lib "$Bin/lib4";
-use Grep;
+use Grep qw(scan_input);
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -52,15 +52,26 @@ if (not @ARGV) {
 # Getting nexta parameter, PATTERN.
 my $pattern = shift @ARGV;
 
-# TODO: describe matching callback
-my $cb = sub { do_somethin_with($pattern) };
-
 # All ready!, starting to filter input
-my @matches = scan_input( \*STDIN, $cb );
+my $matches = scan_input( \*STDIN, sub { 
+    my $content = shift;
 
-# TODO: use @matches to count
-my $found = count_line_matches(@matches);
+    if ( 0 <= index($content, $pattern) ) {
+        return $pattern;
+    }
+});
 
-print "$found\n" if $args{'-c'};
+# Ok, time to print output
+my $found = scalar @$matches;
+if ( $args{'-c'} ) {
+    print "$found\n";
+}
+else {
+    for my $match ( @$matches ) {
+        my $line = $match->{text};
+        $line = $match->{line_nr} . ":$line" if $args{'-n'};
+        print $line;
+    }
+}
 
 exit !$found;
