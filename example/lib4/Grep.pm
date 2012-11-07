@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter 'import';
 
-our $VERSION   = "0.02";
+our $VERSION   = "0.03";
 our @EXPORT_OK = qw( scan_input match_line );
 
 sub scan_input {
@@ -14,7 +14,7 @@ sub scan_input {
     my @results;
     while ( defined( my $line = <$filehandle>) ) {
         if ( my $match = match_line( $., $line, $callback ) ) {
-	        push @results, $match;
+            push @results, $match;
         }
     }
 
