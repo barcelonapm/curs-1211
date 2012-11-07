@@ -55,7 +55,6 @@ my $pattern = shift @ARGV;
 # All ready!, starting to filter input
 my $matches = scan_input( \*STDIN, sub { 
     my $content = shift;
-
     return match_text( $pattern, $content );
 });
 

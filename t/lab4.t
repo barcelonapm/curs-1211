@@ -1,8 +1,10 @@
 use FindBin qw/$Bin/;
-use lib "$Bin/lib";
+use lib "$Bin/lib", "$Bin/..", "$Bin/../example/lib4";
 use CmdExec;
 use Test::More;
 use File::Slurp;
+use IO::String;
+use Grep;
 
 my ($in, $out, $err, $exit) = run_with_input(['-P', 'xxx'], \'asdf');
 subtest 'Option -P is accepted' => sub {
@@ -51,6 +53,29 @@ subtest 'Options -n -P works as expected' => sub {
 EOF
     my ($in, $out, $err, $exit) = run_with_input(['-n', '-P', 'HIGHMEM|LOWMEM'], $input);
     is($out, $exp, "option -n shows line number before line");
+};
+
+subtest "Grep.pm does what's expected" => sub {
+    my $in = join "\n", qw/ uno dos tres cuatro cinco seis /;
+
+    ok (my $matches = Grep::scan_input( IO::String->new($in), sub { 
+        my $content = shift;
+        return Grep::match_text( 'o', $content );
+    }), 'Call Grep::scan_input()' );
+
+    is( ref $matches, 'ARRAY', 'Grep::scan_input() returns an arrayref' );
+    is( @$matches, 4, 'Matches count is 4 as expected' );
+
+    is_deeply(
+        $matches,
+        [
+            { 'text' => "uno\n",    'match' => 'o', 'line_nr' => '1' },
+            { 'text' => "dos\n",    'match' => 'o', 'line_nr' => '2' },
+            { 'text' => "cuatro\n", 'match' => 'o', 'line_nr' => '4' },
+            { 'text' => "cinco\n",  'match' => 'o', 'line_nr' => '5' }
+        ],
+        'Data structure (AoH) looks as expected, yay!'
+    );
 };
 
 done_testing;
