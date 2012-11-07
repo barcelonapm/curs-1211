@@ -56,9 +56,8 @@ my $pattern = shift @ARGV;
 my $matches = scan_input( \*STDIN, sub { 
     my $content = shift;
 
-    if ( 0 <= index($content, $pattern) ) {
-        return $pattern;
-    }
+    my ($match) = $content =~ /($pattern)/;
+    return $match;
 });
 
 # Ok, time to print output

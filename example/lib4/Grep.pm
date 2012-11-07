@@ -24,7 +24,7 @@ sub scan_input {
 sub match_line {
     my ( $line_nr, $line_text, $callback ) = @_;
 
-    if ( my $match = $callback->($line_text) ) {
+    if ( defined( my $match = $callback->($line_text) ) ) {
         return { match => $match, text => $line_text, line_nr => $line_nr };
     }
 }
