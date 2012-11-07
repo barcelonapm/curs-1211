@@ -13,8 +13,9 @@ sub scan_input {
 
     my @results;
     while ( defined( my $line = <$filehandle>) ) {
-        my $match = match_line( $., $line, $callback );
-	push @results, $match if defined $match;
+        if ( my $match = match_line( $., $line, $callback ) ) {
+	        push @results, $match;
+        }
     }
 
     return \@results;
@@ -23,10 +24,9 @@ sub scan_input {
 sub match_line {
     my ( $line_nr, $line_text, $callback ) = @_;
 
-    my @matches = $callback->($line_text);
-
-    return { match => \@matches, text => $line_text, line_nr => $line_nr }
-        if @matches;
+    if ( my $match = $callback->($line_text) ) {
+        return { match => $match, text => $line_text, line_nr => $line_nr };
+    }
 }
 
 # package success
