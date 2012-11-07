@@ -4,7 +4,7 @@
 
 use FindBin qw($Bin);
 use lib "$Bin/lib4";
-use Grep qw(scan_input);
+use Grep qw( scan_input match_text );
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -56,8 +56,7 @@ my $pattern = shift @ARGV;
 my $matches = scan_input( \*STDIN, sub { 
     my $content = shift;
 
-    my ($match) = $content =~ /($pattern)/;
-    return $match;
+    return match_text( $pattern, $content );
 });
 
 # Ok, time to print output
