@@ -25,9 +25,9 @@ for my $opt ( '--help', '-V', '-c', '-n', '-P' ) {
 
 while (substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
-        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
-                     $usage, $usage_advice;
-        exit 1;
+        die "$0: unrecognized option '$ARGV[0]'\n"
+          . $usage 
+          . $usage_advice;
     } else {
         $args{ $ARGV[0] } = 1;
         shift @ARGV
@@ -45,8 +45,7 @@ if ($args{'--help'}){
 }
 
 if (not @ARGV) {
-    print STDERR $usage, $usage_advice;
-    exit 1;
+    die $usage . $usage_advice;
 }
 
 # Getting nexta parameter, PATTERN.

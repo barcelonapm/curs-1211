@@ -39,8 +39,7 @@ if ($args{'--help'}){
 }
 
 if (not @ARGV) {
-    print STDERR $usage, $usage_advice;
-    exit 1;
+    die $usage . $usage_advice;
 }
 
 # Getting nexta parameter, PATTERN.
