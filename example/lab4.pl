@@ -2,7 +2,9 @@
 
 # lab4.pl - Example implementation for perl curs 4th lab.
 
-use lib 'example/lib4';
+use FindBin qw($Bin);
+use lib "$Bin/lib4";
+use Grep;
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
