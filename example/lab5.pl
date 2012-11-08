@@ -20,11 +20,13 @@ for my $filename ( @$files) {
     }
     else { 
         my $fh = get_fh($filename);
-        $found += grep_one_file( $filename || '(standard input)' => $fh );
+        $filename = '(standard input)' if $filename eq '-'; 
+        $found += grep_one_file( $filename || '(standard input)' => $fh ) if $fh;
     }
 }
 
 exit !$found;
+
 
 
 
@@ -40,7 +42,7 @@ sub get_fh {
             open($fh, '<', $filename) || die "$filename: $!";
         }
         else {
-            die "grep: $filename: No such file or directory";
+            print STDERR  "grep: $filename: No such file or directory";
         }
     }
     else {
