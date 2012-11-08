@@ -8,16 +8,20 @@ use lib "$Bin/lib4";
 use Grep qw( scan_input match_text );
 
 my ( $args, $pattern, $files ) = get_options();
-@$files =('') unless @$files;
+@$files = $args->{'-R'}?('./') : ('') unless @$files;
 # Let's check file by file...
 my $found = 0;
 
 # Ensure there is a 'false' filename when no files given to signal
 # the need of reading from STDIN
 for my $filename ( @$files) {
-    my $fh = get_fh($filename);
-    $found += grep_one_file( $filename || '(standard input)' => $fh );
-
+    if (-d $filename) {
+       #to do add contents of directories to $files when necesary 
+    }
+    else { 
+        my $fh = get_fh($filename);
+        $found += grep_one_file( $filename || '(standard input)' => $fh );
+    }
 }
 
 exit !$found;
@@ -31,12 +35,9 @@ sub get_fh {
     my $filename = shift;
 
     my $fh;
-    if ( $filename ) {
+    if ( $filename and $filename ne '-') {
         if ( -f $filename ) {
             open($fh, '<', $filename) || die "$filename: $!";
-        }
-        elsif ( -d $filename ) {
-            #TODO!
         }
         else {
             die "grep: $filename: No such file or directory";
