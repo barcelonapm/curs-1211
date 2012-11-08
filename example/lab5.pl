@@ -8,13 +8,13 @@ use lib "$Bin/lib4";
 use Grep qw( scan_input match_text );
 
 my ( $args, $pattern, $files ) = get_options();
-
+@$files =('') unless @$files;
 # Let's check file by file...
 my $found = 0;
 
 # Ensure there is a 'false' filename when no files given to signal
 # the need of reading from STDIN
-for my $filename ( @$files || '' ) {
+for my $filename ( @$files) {
     my $fh = get_fh($filename);
     $found += grep_one_file( $filename || '(standard input)' => $fh );
 
