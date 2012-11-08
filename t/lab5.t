@@ -19,6 +19,15 @@ subtest 'option -l works as expected' => sub {
     ($in, $out, $err, $exit) = run_with_input(['-l', 'none'], $input);
     is( $out, '', "Output is empty when not matching on standard input" );
 
+    ($in, $out, $err, $exit) = run_with_input(['-l', 'inco', 
+                                               '-','nonexisten_file_one',"$Bin/test_data/data01",
+                                               'nonexisting_file_two','nonexisting_file_tree',
+                                               "$Bin/test_data/data01"],$input);
+    is( $out,"(standard input)\n$Bin/test_data/data01\n$Bin/test_data/data01\n",
+             "Output ok for standard input with a filelist with valid and nonexisting files" );
+    like( $err,qr/nonexisten_file_one.*nonexisting_file_two.*nonexisting_file_tree/sm,'Catches nonexistent file errors');
+         
+
     #TODO: test with multifile ...
 };
 
