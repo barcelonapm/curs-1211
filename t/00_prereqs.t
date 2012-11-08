@@ -10,6 +10,7 @@ use Test::More;
 my @prereqs = qw(
     IPC::Run3
     File::Slurp
+    IO::String
 );
 
 use_ok $_ for @prereqs;
