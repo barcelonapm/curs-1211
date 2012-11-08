@@ -16,7 +16,7 @@ my $found = 0;
 # the need of reading from STDIN
 for my $filename ( @$files || '' ) {
     my $fh = get_fh($filename);
-    $found += grep_one_file( $filename || 'STDIN' => $fh );
+    $found += grep_one_file( $filename || '(standard input)' => $fh );
 
 }
 
@@ -63,8 +63,11 @@ sub grep_one_file {
 
     # Ok, time to print output
     my $found = scalar @$matches;
-    if ( $args->{'-c'} ) {
+    if ( $args->{-c} ) {
         print "$found\n";
+    }
+    elsif ( $args->{-l} ) {
+        print "$filename\n" if $found;
     }
     else {
         for my $match ( @$matches ) {
