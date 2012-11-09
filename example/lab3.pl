@@ -53,7 +53,9 @@ my $found=0;
 while (my $line = <STDIN>){
     if (0 <= index($line,$pattern)) {
         $found++; 
-        print $line unless $args{'-c'};
+        if (not $args{'-c'}) {
+            print $line;
+        }
     }
 }
 
