@@ -33,7 +33,7 @@ while (@files) {
 
     if (-d $filename) {
        if ( not $args->{-R} ) {
-           exit 1;
+           next;
        }
 
        push @files, list_dir($filename);
@@ -124,7 +124,8 @@ sub grep_one_file {
                 print "$filename\n";
             }
             elsif ( not $args->{'-c'} ) {
-                $line = "$.:$line" if $args->{'-n'};
+                $line = "$.:$line"        if $args->{'-n'};
+                $line = "$filename:$line" if $args->{'-R'};
                 print $line;
             }
         }

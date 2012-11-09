@@ -25,7 +25,7 @@ while (@files) {
 
     if (-d $filename) {
        if ( not $args->{-R} ) {
-           exit 1;
+           next;
        }
 
        push @files, list_dir($filename);
@@ -123,6 +123,9 @@ sub grep_one_file {
     # Ok, time to print output
     my $found = scalar @$matches;
     if ( $args->{-c} ) {
+        if ( $args->{-R} ) {
+            print "$filename:";
+        }
         print "$found\n";
     }
     elsif ( $args->{-l} ) {
@@ -131,7 +134,15 @@ sub grep_one_file {
     else {
         for my $match ( @$matches ) {
             my $line = $match->{text};
-            $line = $match->{line_nr} . ":$line" if $args->{'-n'};
+
+            if ( $args->{'-n'} ) {
+                $line = $match->{line_nr} . ":$line";
+            }
+
+            if ( $args->{'-R'} ) {
+                $line = $filename . ":$line";
+            }
+
             print $line;
         }
     }
