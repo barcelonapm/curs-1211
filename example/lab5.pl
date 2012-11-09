@@ -21,9 +21,7 @@ for my $filename ( @$files) {
        #to do add contents of directories to $files when necesary 
     }
     else { 
-        my $fh = get_fh($filename);
-        $filename = '(standard input)' if $filename eq '-'; 
-        $found += grep_one_file( $filename  => $fh ) if $fh;
+        $found += grep_one_file($filename);
     }
 }
 
@@ -32,9 +30,12 @@ exit !$found;
 
 
 
-=head2 get_fh
-Open and returns a filehandler for the given file or STDIN when no filename given.
-=cut
+#
+# get_fh( $filename )
+#
+# Open and returns a filehandler for the given file
+# or STDIN when no filename given.
+#
 sub get_fh {
     my $filename = shift;
 
@@ -54,11 +55,16 @@ sub get_fh {
     $fh;
 }
 
-=head2 grep_one_file
-Given a filename and a filehandler this will run all grep login on this filehandle.
-=cut
+#
+# grep_one_file( $filename )
+#
+# Given a filename this will run all grep login on this filehandle.
+#
 sub grep_one_file {
-    my ( $filename, $fh ) = @_;
+    my ($filename) = @_;
+
+    my $fh = get_fh($filename);
+    $filename = '(standard input)' if $filename eq '-';
 
     # All ready!, starting to filter input
     my $matches = scan_input( $fh, sub { 
