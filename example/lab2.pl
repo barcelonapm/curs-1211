@@ -19,9 +19,9 @@ my %validoptions = (
 
 while (substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
-        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
-                     $usage, $usage_advice;
-        exit 1;
+        die "$0: unrecognized option '$ARGV[0]'\n"
+          . $usage
+          . $usage_advice;
     } else {
         $args{ $ARGV[0] } = 1;
         shift @ARGV
