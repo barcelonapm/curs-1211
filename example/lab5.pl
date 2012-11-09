@@ -20,9 +20,15 @@ if ( not @files ) {
 # Let's check file by file...
 my $found = 0;
 
-for my $filename (@files) {
+while (@files) {
+    my $filename = shift @files;
+
     if (-d $filename) {
-       #to do add contents of directories to $files when necesary 
+       if ( not $args->{-R} ) {
+           exit 1;
+       }
+
+       push @files, list_dir($filename);
     }
     else { 
         $found += grep_one_file($filename);
@@ -31,8 +37,33 @@ for my $filename (@files) {
 
 exit !$found;
 
+#
+# list_dir( $name )
+#
+# Gets a list of directory contents except . and ..
+#
+sub list_dir {
+    my $filename = shift;
 
+    if ( substr( $filename, length($filename)-1 ) ne '/' ) {
+        $filename .= '/';
+    }
 
+    if ( opendir my $dir, $filename ) {
+        my @list;
+
+        while ( defined( my $entry = readdir $dir ) ) {
+            if ( $entry ne '.' && $entry ne '..' ) {
+                push @list, "$filename$entry";
+            }
+        }
+
+        return @list;
+    }
+
+    warn "$0: $filename: $!\n";
+    return;
+}
 
 #
 # get_fh( $filename )
@@ -65,7 +96,7 @@ sub grep_one_file {
 
     my $fh = get_fh($filename);
     if ( not defined $fh ) {
-        return;
+        return 0;
     }
 
     if ( $filename eq '-' ) {
