@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our $VERSION   = "0.03";
-our @EXPORT_OK = qw( scan_input match_line match_text );
+our @EXPORT_OK = qw( scan_input match_line );
 
 sub scan_input {
     my ( $filehandle, $callback ) = @_;
@@ -27,13 +27,6 @@ sub match_line {
     if ( defined( my $match = $callback->($line_text) ) ) {
         return { match => $match, text => $line_text, line_nr => $line_nr };
     }
-}
-
-sub match_text {
-    my ( $pattern, $content ) = @_;
-
-    my ($match) = $content =~ /($pattern)/;
-    return $match;
 }
 
 # package success

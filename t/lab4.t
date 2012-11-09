@@ -6,14 +6,16 @@ use File::Slurp;
 use IO::String;
 use Grep;
 
-my ($in, $out, $err, $exit) = run_with_input(['-P', 'xxx'], \'asdf');
-subtest 'Option -P is accepted' => sub {
-    ok((not $err), 'No error with -P option');
+subtest 'Help message has new -n option' => sub {
+    my ($in, $out, $err, $exit) = run_command('--help');
+
+    like ($out, qr/-n/m, "--help has -n option");
+    like ($out, qr/-v/m, "--help has -v option");
 };
 
-my $input = read_file("$Bin/test_data/data01");
+subtest 'Option -n exists and work as expected' => sub {
+    my $input = read_file("$Bin/test_data/data01");
 
-subtest 'Option -n' => sub {
     my ($in, $out, $err, $exit) = run_with_input(['-n', '570'], $input);
 
     ok((not $err), 'No error with -n option');
@@ -27,41 +29,34 @@ subtest 'Option -n' => sub {
 EOF
 
     is($out, $exp, "option -n shows line number before line");
+
+    ($in, $out, $err, $exit) = run_with_input(['-n', 'HIGHMEM'], $input);
+    is( $out, "72:[    0.000000] 0MB HIGHMEM available.\n", "option -n shows line number before line" );
+
+    ($in, $out, $err, $exit) = run_with_input(['-n', 'LOWMEM'], $input);
+    is( $out, "73:[    0.000000] 512MB LOWMEM available.\n", "option -n shows line number before line" );
+};
+
+subtest 'Option -v work as expected' => sub {
+    my $input = join "\n", qw/ uno dos tres cuatro cinco /;
+
+    my ($in, $out, $err, $exit) = run_with_input(['-v', 'o'], $input);
+    is( $out, "tres\n", "-v option negate matches as expected" );
+
+    ($in, $out, $err, $exit) = run_with_input(['-v', 'c'], $input);
+    is( $out, "uno\ndos\ntres\n", "-v option negate matches as expected" );
 };
 
 subtest 'Grep.pm is correctly defined' => sub {
     my $module = 'Grep';
     use_ok($module);
-    can_ok( $module, 'scan_input', 'match_line', 'match_text' );
-};
-
-subtest 'Options -c -P works as expected' => sub {
-    my ($in, $out, $err, $exit) = run_with_input(['-c', '-P', 'BIOS'], $input);
-    is($out, "22\n", "grep -n -P BIOS");
-
-    ($in, $out, $err, $exit) = run_with_input(['-c', '-P', 'ACPI'], $input);
-    is($out, "70\n", "grep -n -P BIOS");
-
-    ($in, $out, $err, $exit) = run_with_input(['-c', '-P', 'BIOS|ACPI'], $input);
-    is($out, "88\n", "grep -n -P BIOS");
-};
-
-subtest 'Options -n -P works as expected' => sub {
-    my $exp = <<'EOF';
-72:[    0.000000] 0MB HIGHMEM available.
-73:[    0.000000] 512MB LOWMEM available.
-EOF
-    my ($in, $out, $err, $exit) = run_with_input(['-n', '-P', 'HIGHMEM|LOWMEM'], $input);
-    is($out, $exp, "option -n shows line number before line");
+    can_ok( $module, 'scan_input', 'match_line' );
 };
 
 subtest "Grep.pm does what's expected" => sub {
     my $in = join "\n", qw/ uno dos tres cuatro cinco seis /;
 
-    ok (my $matches = Grep::scan_input( IO::String->new($in), sub { 
-        my $content = shift;
-        return Grep::match_text( 'o', $content );
-    }), 'Call Grep::scan_input()' );
+    ok (my $matches = Grep::scan_input( IO::String->new($in), sub { return shift =~ /o/ ? 'o' : undef; }), 'Call Grep::scan_input()' );
 
     is( ref $matches, 'ARRAY', 'Grep::scan_input() returns an arrayref' );
     is( @$matches, 4, 'Matches count is 4 as expected' );

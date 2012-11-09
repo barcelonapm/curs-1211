@@ -5,7 +5,7 @@
 use strict;
 use FindBin qw($Bin);
 use lib "$Bin/lib4";
-use Grep qw( scan_input match_text );
+use Grep qw( scan_input );
 
 my ( $args, $pattern, $files ) = get_options();
 @$files = $args->{'-R'}?('./') : ('-') unless @$files;
@@ -60,8 +60,12 @@ sub grep_one_file {
 
     # All ready!, starting to filter input
     my $matches = scan_input( $fh, sub { 
-        my $content = shift;
-        return match_text( $pattern, $content );
+        my $line = shift;
+        my $ret = undef;                                 # Init return value as no match
+        $ret = $pattern if (0 <= index($line,$pattern)); # Set pattern if it match
+        $ret = ''    if $args->{-v} && !$ret;              # Set empty string when no match and -v is active
+        $ret = undef if $args->{-v} && $ret;               # Set undef when match but -v is active
+        return $ret;
     });
 
     # Ok, time to print output
@@ -99,12 +103,12 @@ sub get_options {
       '-V' => 'version info',
       '-c' => 'only print a count of matching lines per FILE',
       '-n' => 'print line number with output lines',
-      '-P' => 'PATTERN is a Perl regular expression',
+      '-v' => 'select non-matching lines',
       '-R' => 'equivalent to --directories=recurse',
       '-l' => 'only print FILE names containing matches',
     );
 
-    for my $opt ( '--help', '-V', '-c', '-n', '-P', '-R', '-l' ) {
+    for my $opt ( '--help', '-V', '-c', '-n', '-v', '-R', '-l' ) {
         $usage_options .= "$opt $validoptions{$opt}\n";
     }
 
