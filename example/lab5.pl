@@ -132,10 +132,13 @@ sub grep_one_file {
     return $found;
 }
 
-=head2 get_options
-Function to parse grep options, pattern and files if any.
-Returns hashref with options, pattern string and arrayref with files given if any.
-=cut
+#
+# get_options()
+#
+# Function to parse grep options, pattern and files if any.
+# Returns hashref with options, pattern string and arrayref
+# with files given if any.
+#
 sub get_options {
     # Prepare help message to be user around
     my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -153,7 +156,7 @@ sub get_options {
       '-l' => 'only print FILE names containing matches',
     );
 
-    for my $opt ( '--help', '-V', '-c', '-n', '-v', '-R', '-l' ) {
+    for my $opt ( '--help', qw/ -V -c -n -v -R -l / ) {
         $usage_options .= "$opt $validoptions{$opt}\n";
     }
 
