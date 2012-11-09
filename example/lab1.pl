@@ -2,6 +2,9 @@
 
 # lab1.pl - Example implementation for perl curs first practice.
 
+use strict;
+use warnings;
+
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
 my $usage_advice = "Try `$0 --help' for more information.\n";

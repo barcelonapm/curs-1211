@@ -2,6 +2,9 @@
 
 # lab3.pl - Example implementation for perl curs third practice.
 
+use strict;
+use warnings;
+
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
 my $usage_advice = "Try `$0 --help' for more information.\n";
@@ -17,7 +20,7 @@ for my $opt ( '--help', '-V', '-c' ) {
     $usage_options .= "$opt $validoptions{$opt}\n";
 }
 
-while (substr($ARGV[0], 0, 1) eq '-'){
+while (@ARGV && substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
         die "$0: unrecognized option '$ARGV[0]'\n"
           . $usage

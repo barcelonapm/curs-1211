@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 use FindBin qw/$Bin/;
 use lib "$Bin/lib";
 use CmdExec;
@@ -14,7 +17,7 @@ subtest 'Run command with invalid option' => sub {
 
     ok   ($err, "There is output in STDERR");
     like ($err, qr/unrecognized option/m, "Error says 'unrecognized option'");
-    like ($err, qr/$invalid_opt/m, "Error shows which option was given");
+    like ($err, qr/--no-valid-option/m, "Error shows which option was given");
     isnt ($exit, 0, "Exit code is not 0");
 };
 

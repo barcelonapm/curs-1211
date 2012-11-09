@@ -2,6 +2,9 @@
 
 # lab4.pl - Example implementation for perl curs 4th lab.
 
+use strict;
+use warnings;
+
 use FindBin qw($Bin);
 use lib "$Bin/lib4";
 use Grep qw( scan_input );
@@ -23,7 +26,7 @@ for my $opt ( '--help', '-V', '-c', '-n', '-v' ) {
     $usage_options .= "$opt $validoptions{$opt}\n";
 }
 
-while (substr($ARGV[0], 0, 1) eq '-'){
+while (@ARGV && substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
         die "$0: unrecognized option '$ARGV[0]'\n"
           . $usage 
