@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 use FindBin qw/$Bin/;
 use lib "$Bin/lib", "$Bin/..", "$Bin/../example/lib4";
 use CmdExec;
