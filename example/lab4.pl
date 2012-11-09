@@ -64,10 +64,10 @@ my $matches = scan_input( \*STDIN, sub {
     }
     else {
         if ( 0 <= index($line,$pattern)) {
-            return  $pattern;
+            return $pattern;
         }
-    }             
-        
+    }
+
     return undef;
 });
 
