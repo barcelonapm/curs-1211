@@ -1,10 +1,17 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
 
 # lab6.pl - Example implementation for perl curs 6th lab.
 
-my ( $args, $pattern, $files ) = get_options();
+use strict;
+use warnings;
+
+my ( $args, $pattern, @files ) = get_options();
+
+# Ensure there is a 'false' filename when no files given to signal
+# the need of reading from STDIN
+if ( not @files ) {
+    push @files, '-';
+}
 
 # Escape metachars from pattern unless perl regex mode is on.
 $pattern = quotemeta($pattern) unless $args->{'-P'};
@@ -21,17 +28,18 @@ $pattern = qr/^$pattern$/               if $args->{'-x'};
 # Let's check file by file...
 my $found = 0;
 
-# Ensure there is a '-' filename when no files given to signal
-# the need of reading from STDIN
-@$files = $args->{'-R'} ? ('./') : ('') unless @$files;
-for my $filename ( @$files) {
+while (@files) {
+    my $filename = shift @files;
+
     if (-d $filename) {
-       #to do add contents of directories to $files when necesary 
+       if ( not $args->{-R} ) {
+           exit 1;
+       }
+
+       push @files, list_dir($filename);
     }
     else { 
-        my $fh = get_fh($filename);
-        $filename = '(standard input)' if $filename eq '-'; 
-        $found += grep_one_file( $filename || '(standard input)' => $fh ) if $fh;
+        $found += grep_one_file($filename);
     }
 }
 
@@ -39,11 +47,71 @@ print "$found\n" if $args->{-c};
 
 exit !$found;
 
-=head2 grep_one_file
-Given a filename and a filehandler this will run all grep login on this filehandle.
-=cut
+#
+# list_dir( $name )
+#
+# Gets a list of directory contents except . and ..
+#
+sub list_dir {
+    my $filename = shift;
+
+    if ( substr( $filename, length($filename)-1 ) ne '/' ) {
+        $filename .= '/';
+    }
+
+    if ( opendir my $dir, $filename ) {
+        my @list;
+
+        while ( defined( my $entry = readdir $dir ) ) {
+            if ( $entry ne '.' && $entry ne '..' ) {
+                push @list, "$filename$entry";
+            }
+        }
+
+        return @list;
+    }
+
+    warn "$0: $filename: $!\n";
+    return;
+}
+
+#
+# get_fh( $filename )
+#
+# Open and returns a filehandler for the given file
+# or STDIN when no filename given.
+#
+sub get_fh {
+    my $filename = shift;
+
+    if ( $filename eq '-' ) {
+        return \*STDIN;
+    }
+
+    if ( open my $fh, '<', $filename ) {
+        return $fh;
+    }
+
+    warn "$0: $filename: $!\n";
+    return;
+}
+
+#
+# grep_one_file( $filename )
+#
+# Given a filename this will run all grep login on this filehandle.
+#
 sub grep_one_file {
-    my ( $filename, $fh ) = @_;
+    my ($filename) = @_;
+
+    my $fh = get_fh($filename);
+    if ( not defined $fh ) {
+        return 0;
+    }
+
+    if ( $filename eq '-' ) {
+        $filename = '(standard input)';
+    }
 
     # All ready!, starting to filter input
     my $found = 0;
@@ -65,32 +133,13 @@ sub grep_one_file {
     return $found;
 }
 
-=head2 get_fh
-Open and returns a filehandler for the given file or STDIN when no filename given.
-=cut
-sub get_fh {
-    my $filename = shift;
-
-    my $fh;
-    if ( $filename and $filename ne '-') {
-        if ( -f $filename ) {
-            open($fh, '<', $filename) || die "$filename: $!";
-        }
-        else {
-            print STDERR  "grep: $filename: No such file or directory";
-        }
-    }
-    else {
-        $fh = \*STDIN;
-    }
-
-    $fh;
-}
-
-=head2 get_options
-Function to parse grep options, pattern and files if any.
-Returns hashref with options, pattern string and arrayref with files given if any.
-=cut
+#
+# get_options()
+#
+# Function to parse grep options, pattern and files if any.
+# Returns hashref with options, pattern string and arrayref
+# with files given if any.
+#
 sub get_options {
     # Prepare help message to be user around
     my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -112,11 +161,11 @@ sub get_options {
       '-x' => 'force PATTERN to match only whole lines',
     );
 
-    for my $opt ( '--help', map {"-$_"} qw/ V c n v R l P i w x / ) {
+    for my $opt ( '--help', qw/ -V -c -n -v -R -l -P -i -w -x / ) {
         $usage_options .= "$opt $validoptions{$opt}\n";
     }
 
-    while (substr($ARGV[0]||'', 0, 1) eq '-'){
+    while (@ARGV && substr($ARGV[0], 0, 1) eq '-'){
         if (not exists $validoptions{ $ARGV[0] }){
             die "$0: unrecognized option '$ARGV[0]'\n"
               . $usage 
@@ -144,6 +193,6 @@ sub get_options {
     # Getting nexta parameter, PATTERN.
     my $pattern = shift @ARGV;
 
-    return \%args, $pattern, [@ARGV];
+    return \%args, $pattern, @ARGV;
 }
 
