@@ -8,7 +8,7 @@ use lib "$Bin/lib4";
 use Grep qw( scan_input match_text );
 
 my ( $args, $pattern, $files ) = get_options();
-@$files = $args->{'-R'}?('./') : ('') unless @$files;
+@$files = $args->{'-R'}?('./') : ('-') unless @$files;
 # Let's check file by file...
 my $found = 0;
 
@@ -21,7 +21,7 @@ for my $filename ( @$files) {
     else { 
         my $fh = get_fh($filename);
         $filename = '(standard input)' if $filename eq '-'; 
-        $found += grep_one_file( $filename || '(standard input)' => $fh ) if $fh;
+        $found += grep_one_file( $filename  => $fh ) if $fh;
     }
 }
 
@@ -37,7 +37,7 @@ sub get_fh {
     my $filename = shift;
 
     my $fh;
-    if ( $filename and $filename ne '-') {
+    if ( $filename ne '-') {
         if ( -f $filename ) {
             open($fh, '<', $filename) || die "$filename: $!";
         }
