@@ -9,14 +9,18 @@ use FindBin qw($Bin);
 use lib "$Bin/lib4";
 use Grep qw( scan_input );
 
-my ( $args, $pattern, $files ) = get_options();
-@$files = $args->{'-R'}?('./') : ('-') unless @$files;
-# Let's check file by file...
-my $found = 0;
+my ( $args, $pattern, @files ) = get_options();
 
 # Ensure there is a 'false' filename when no files given to signal
 # the need of reading from STDIN
-for my $filename ( @$files) {
+if ( not @files ) {
+    push @files, '-';
+}
+
+# Let's check file by file...
+my $found = 0;
+
+for my $filename (@files) {
     if (-d $filename) {
        #to do add contents of directories to $files when necesary 
     }
@@ -39,20 +43,16 @@ exit !$found;
 sub get_fh {
     my $filename = shift;
 
-    my $fh;
-    if ( $filename ne '-') {
-        if ( -f $filename ) {
-            open($fh, '<', $filename) || die "$filename: $!";
-        }
-        else {
-            print STDERR  "grep: $filename: No such file or directory";
-        }
-    }
-    else {
-        $fh = \*STDIN;
+    if ( $filename eq '-' ) {
+        return \*STDIN;
     }
 
-    $fh;
+    if ( open my $fh, '<', $filename ) {
+        return $fh;
+    }
+
+    warn "$0: $filename: $!\n";
+    return;
 }
 
 #
@@ -64,7 +64,13 @@ sub grep_one_file {
     my ($filename) = @_;
 
     my $fh = get_fh($filename);
-    $filename = '(standard input)' if $filename eq '-';
+    if ( not defined $fh ) {
+        return;
+    }
+
+    if ( $filename eq '-' ) {
+        $filename = '(standard input)';
+    }
 
     # All ready!, starting to filter input
     my $matches = scan_input( $fh, sub { 
@@ -148,6 +154,6 @@ sub get_options {
     # Getting nexta parameter, PATTERN.
     my $pattern = shift @ARGV;
 
-    return \%args, $pattern, [@ARGV];
+    return \%args, $pattern, @ARGV;
 }
 
