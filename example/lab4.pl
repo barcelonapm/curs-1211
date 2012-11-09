@@ -57,11 +57,18 @@ my $pattern = shift @ARGV;
 # All ready!, starting to filter input
 my $matches = scan_input( \*STDIN, sub { 
     my $line = shift;
-    my $ret = undef;                                 # Init return value as no match
-    $ret = $pattern if (0 <= index($line,$pattern)); # Set pattern if it match
-    $ret = ''    if $args{-v} && !$ret;              # Set empty string when no match and -v is active
-    $ret = undef if $args{-v} && $ret;               # Set undef when match but -v is active
-    return $ret;
+    if ($args{'-v'}) {
+        if ( 0 > index($line,$pattern)) {
+            return $pattern;
+        }
+    }
+    else {
+        if ( 0 <= index($line,$pattern)) {
+            return  $pattern;
+        }
+    }             
+        
+    return undef;
 });
 
 # Ok, time to print output
@@ -72,7 +79,9 @@ if ( $args{'-c'} ) {
 else {
     for my $match ( @$matches ) {
         my $line = $match->{text};
-        $line = $match->{line_nr} . ":$line" if $args{'-n'};
+        if ($args{'-n'}) {
+            $line = $match->{line_nr} . ":$line";
+        }
         print $line;
     }
 }
