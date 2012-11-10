@@ -9,9 +9,14 @@
 
 laboratori
 -- [text-align=left]
-github.com
+https://github.com
 /barcelonapm/curs-1211
 /archive/master.zip
+-- [text-align=left]
+<u>test driven learning</u>
+
+prove [-v] t/lab1.t
+prove [-v] t/lab2.t
 -- [text-align=left]
 <u>lab1</u>
 
