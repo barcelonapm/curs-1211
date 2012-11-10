@@ -1,0 +1,73 @@
+Test 1, 2:
+	- L'ajuda de grep.pl ha de tenir dues opcions més: -R i -l
+	- Exemple:
+		./grep.pl --help
+			Usage: grep.pl [OPTION]... PATTERN [FILE]...
+				--help usage information
+				-V version info
+				-c only print a count of matching lines per FILE
+				-n print line number with output lines
+				-v select non-matching lines
+				-R equivalent to --directories=recurse
+				-l only print FILE names containing matches
+	- Test: l'ajuda ha de contenir les opcions '-R' i '-l'.
+
+Test 3:
+	- Executar grep.pl amb opció -l, un pattern i amb entrada estàndard (STDIN)
+	- Exemple: 
+		echo 'un dos tres quatre cinc' | ./grep.pl -l 'tres'
+		(standard input)
+	- Test: grep.pl ha de retornar el nom del fitxer que conté el pattern, en aquest cas entrada estàndard.
+
+Test 4:
+	- Executar grep.pl amb opció -l, un pattern que no es trobi i amb entrada estàndard (STDIN)
+	- Exemple: 
+		echo 'un dos tres quatre cinc' | ./grep.pl -l 'sis'
+	- Test: grep.pl no ha de retornar res
+
+Test 5, 6:
+	- Executar grep.pl amb opció -c, pattern i passat diversos fitxers existents i no existents per entrada estàndard (STDIN)
+	- Exemple:
+		cat t/test_data/data01 fitxer_inexistet_1 |  grep -l inco
+		(standard input)
+		cat: fitxer_inexistet_1: El fitxer o directori no existeix
+	- Test: grep.pl ha de retornar tant "(standard input)" per STDIN (test 5) com un missatge d'error amb els fitxers inexistents per STDERR (test 6)
+
+Test 7, 8, 9, 10:
+	- Executar grep.pl amb l'opció -R, un patter i un directori perquè busqui dins recursivament
+	- Exemple:
+		./grep.pl -R 'MEM' t/test_data
+		t/test_data/data01:[    0.000000] ACPI: SRAT 1fef0888 00080 (v02 VMWARE MEMPLUG  06040000 VMW  00000001)
+		t/test_data/data01:[    0.000000] 0MB HIGHMEM available.
+		t/test_data/data01:[    0.000000] 512MB LOWMEM available.
+	- Test: comprova que es retornin les línies on es fa matching del pattern
+
+Test 11, 12, 13, 14:
+	- Executar grep.pl amb l'opció -R com al test anterior i amb l'opció -n que printa el número de línia
+	- Exemple:
+		grep -n -R MEM t/test_data/
+		t/test_data/data01:70:[    0.000000] ACPI: SRAT 1fef0888 00080 (v02 VMWARE MEMPLUG  06040000 VMW  00000001)
+		t/test_data/data01:72:[    0.000000] 0MB HIGHMEM available.
+		t/test_data/data01:73:[    0.000000] 512MB LOWMEM available.
+	- Test: comprova que es retorni el número de línia per cada línia que fa matching del pattern
+
+Test 15-27:
+	- Executar grep.pl amb l'opció -R i l'opció -c, per indicar les vegades que s'ha trobat el pattern a cada fitxer
+	- Exemple:
+		grep -c -R 'x' t/test_data/
+		t/test_data/lipsum/data01:0
+		t/test_data/data01:499
+		t/test_data/enron1/Summary.txt:0
+		t/test_data/enron1/spam/0008.2003-12-18.GP.spam.txt:2
+		t/test_data/enron1/spam/0006.2003-12-18.GP.spam.txt:2
+		t/test_data/enron1/ham/0003.1999-12-14.farmer.ham.txt:0
+		t/test_data/enron1/ham/0002.1999-12-13.farmer.ham.txt:6
+		t/test_data/enron1/ham/0005.1999-12-14.farmer.ham.txt:0
+		t/test_data/enron1/ham/0007.1999-12-14.farmer.ham.txt:0
+		t/test_data/enron1/ham/0009.1999-12-14.farmer.ham.txt:0
+		t/test_data/enron1/ham/0001.1999-12-10.farmer.ham.txt:0
+		t/test_data/enron1/ham/0004.1999-12-14.farmer.ham.txt:1
+	- Test: comprova que es retorni el fitxer i el número de vegades que s'ha trobat el pattern a dins
+
+		
+
