@@ -1,0 +1,130 @@
+#################################################################################
+#																				#
+# WARNING: cal corregir un error al test. Si us plau, seguiu les instruccions:	#
+#	1. Editeu el fitxer t/lab6.t												#
+#	2. Aneu a la línia 52.														#
+#	3. Canvieu '-w' per '-x'.													#
+# Si teniu cap dubte, pregunteu!												#
+#																				#
+#################################################################################
+
+
+Test 1, 2, 3, 4:
+	- L'ajuda de grep.pl ha de tenir quatre opcions més: -P, -i, -x, -w
+	- Exemple:
+		> ./grep.pl --help
+		Usage: ./grep.pl [OPTION]... PATTERN [FILE]...
+		--help usage information
+		-V version info
+		-c only print a count of matching lines per FILE
+		-n print line number with output lines
+		-v select non-matching lines
+		-R equivalent to --directories=recurse
+		-l only print FILE names containing matches
+		-P PATTERN is a Perl regular expression
+		-i ignore case distinctions
+		-w force PATTERN to match only whole words
+		-x force PATTERN to match only whole lines
+	- Test: l'ajuda ha de tenir les 4 opcions de més.
+
+Test 5:
+	- Executar grep.pl sense -P amb una expressió regular
+	- Exemple: 
+		> echo 'un dos tres quatre cinc' | ./grep.pl 'un|dos'
+	- Test: grep.pl no retorna res
+
+Test 6:
+	- Executar grep.pl amb -P amb una expressió regular
+	- Exemple: 
+		> echo 'un dos tres quatre cinc' | ./grep.pl -P 'un|dos'
+		un dos tres quatre cinc
+	- Test: grep.pl no retorna res
+
+Test 7:
+	- Executar grep.pl sense -i 
+	- Exemple: 
+		> echo 'Un Dos Tres' | ./grep.pl dos
+	- Test: grep.pl no retorna res
+
+Test 8:
+	- Executar grep.pl amb -i
+	- Exemple:
+		> echo 'Un Dos Tres' | ./grep.pl -i dos
+		Un Dos Tres
+	- Test: comprova que grep.pl retorni la línia
+
+Test 9:
+	- Executar grep.pl sense -x
+	- Exemple:
+		> echo 'uno' > testfile
+		> echo 'dos' >> testfile
+		> echo 'tres' >> testfile
+		> ./grep.pl do testfile
+		dos
+	- Test: comprova que grep.pl retorna el match parcial
+
+Test 10:
+	- Executar grep.pl amb -x
+	- Exemple:
+		> echo 'uno' > testfile2
+		> echo 'dos' >> testfile2
+		> echo 'tres' >> testfile2
+		> ./grep.pl -x do testfile2
+	- Test: comprova que no retorna res perquè no fa matching total de la línia
+
+Test 11:
+	- Executar grep.pl amb -x
+	- Exemple:
+		> echo 'uno' > testfile2
+		> echo 'dos' >> testfile2
+		> echo 'tres' >> testfile2
+		> ./grep.pl -x dos testfile2
+		dos
+	- Test: comprova que retorna la linia si fa matching total
+
+Test 12:
+	- Executar grep.pl sense -w
+	- Exemple:
+		> echo "un dos tres" | ./grep.pl do
+		un dos tres
+	- Test: comprova que sense utilitzar l'opció mostra la línia que fa matching
+
+Test 13:
+	- Executar grep.pl amb -w
+	- Exemple:
+		> echo "un dos tres" | ./grep.pl -w do
+	- Test: comprova que utilitzant -w no fa matching parcial
+
+Test 14:
+	- Executar grep.pl amb -w
+	- Exemple:
+		> echo "un dos tres" | ./grep.pl -w dos
+		un dos tres
+	- Test: comprova que fa el matching de la paraula completa
+
+Test 15, 16 i 17:
+	- Executar grep.pl amb -w quan el que busquem està al principi, mig i final de linia
+	- Exemple:
+		> echo "un dos tres" | ./grep.pl -w un
+		un dos tres
+		> echo "un dos tres" | ./grep.pl -w tres
+		un dos tres
+		> echo "un dos tres" | ./grep.pl -w dos
+		un dos tres
+	- Test: comprova que fa matching tant si la paraula completa està al principi com al final com al mig de la linia
+
+Test 18, 19, 20:
+	- Executar grep.pl amb les opcions  -c i -P
+	- Exemple:
+		> ./grep.pl -c -P 'BIOS|ACPI' t/test_data/data01
+		88
+	- Test: comprova que retorna el número d'aparicions del pattern com a expressió regular de Perl
+
+Test 21:
+	- Executar grep.pl amb les opcions -n i -P
+	- Exemple:
+		> ./grep.pl -n -P 'HIGHMEM|LOWMEM' test_data/data01 
+		72:[    0.000000] 0MB HIGHMEM available.
+		73:[    0.000000] 512MB LOWMEM available.
+	- Test: comprova que retorni el número de linia on troba el pattern com a expressió regular de Perl
+
