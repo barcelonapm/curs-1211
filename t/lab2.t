@@ -4,7 +4,7 @@ use warnings;
 use FindBin qw/$Bin/;
 use lib "$Bin/lib";
 use CmdExec;
-use Test::More ;
+use Test::More tests => 12;
 
 test_version( '-V' );
 test_help   ( '--help' );
@@ -12,16 +12,18 @@ test_help   ( '--help' );
 test_version( '--help', '-V' );
 test_version( '-V', '--help' );
 
-subtest 'Run command with invalid option' => sub {
+#subtest 'Run command with invalid option' => sub {
+{
     my ($in, $out, $err, $exit) = run_command('--no-valid-option');
 
     ok   ($err, "There is output in STDERR");
     like ($err, qr/unrecognized option/m, "Error says 'unrecognized option'");
     like ($err, qr/--no-valid-option/m, "Error shows which option was given");
     isnt ($exit, 0, "Exit code is not 0");
-};
+}
 
-subtest 'Full output of and invalid option' => sub {
+#subtest 'Full output of and invalid option' => sub {
+{
     my $cmd = command_path();
     my  ($in, $out, $err, $exit) = run_command('--foobar');
 
@@ -34,9 +36,7 @@ EOF
     is  ($err, $output, "Error message ok");
     is  ($out, '', "No output in STDOUT");
     isnt($exit, 0, "Exit code is not 0");
-};
-
-done_testing;
+}
 
 sub test_help {
     my ($in, $out, $err, $exit) = run_command(@_);

@@ -4,19 +4,21 @@ use warnings;
 use FindBin qw/$Bin/;
 use lib "$Bin/lib", "$Bin/..", "$Bin/../example/lib4";
 use CmdExec;
-use Test::More;
+use Test::More tests => 14;
 use File::Slurp;
 use IO::String;
 use Grep;
 
-subtest 'Help message has new -n option' => sub {
+#subtest 'Help message has new -n option' => sub {
+{
     my ($in, $out, $err, $exit) = run_command('--help');
 
     like ($out, qr/-n/m, "--help has -n option");
     like ($out, qr/-v/m, "--help has -v option");
-};
+}
 
-subtest 'Option -n exists and work as expected' => sub {
+#subtest 'Option -n exists and work as expected' => sub {
+{
     my $input = read_file("$Bin/test_data/data01");
 
     my ($in, $out, $err, $exit) = run_with_input(['-n', '570'], $input);
@@ -38,9 +40,10 @@ EOF
 
     ($in, $out, $err, $exit) = run_with_input(['-n', 'LOWMEM'], $input);
     is( $out, "73:[    0.000000] 512MB LOWMEM available.\n", "option -n shows line number before line" );
-};
+}
 
-subtest 'Option -v work as expected' => sub {
+#subtest 'Option -v work as expected' => sub {
+{
     my $input = join "\n", qw/ uno dos tres cuatro cinco /;
 
     my ($in, $out, $err, $exit) = run_with_input(['-v', 'o'], $input);
@@ -48,15 +51,17 @@ subtest 'Option -v work as expected' => sub {
 
     ($in, $out, $err, $exit) = run_with_input(['-v', 'c'], $input);
     is( $out, "uno\ndos\ntres\n", "-v option negate matches as expected" );
-};
+}
 
-subtest 'Grep.pm is correctly defined' => sub {
+#subtest 'Grep.pm is correctly defined' => sub {
+{
     my $module = 'Grep';
     use_ok($module);
     can_ok( $module, 'scan_input', 'match_line' );
-};
+}
 
-subtest "Grep.pm does what's expected" => sub {
+#subtest "Grep.pm does what's expected" => sub {
+{
     my $in = join "\n", qw/ uno dos tres cuatro cinco seis /;
 
     ok (my $matches = Grep::scan_input( IO::String->new($in), sub { return shift =~ /o/ ? 'o' : undef; }), 'Call Grep::scan_input()' );
@@ -74,6 +79,4 @@ subtest "Grep.pm does what's expected" => sub {
         ],
         'Data structure (AoH) looks as expected, yay!'
     );
-};
-
-done_testing;
+}
