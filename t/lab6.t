@@ -49,7 +49,7 @@ use File::Slurp;
     ($in, $out, $err, $exit) = run_with_input(['-x', 'cua'], $input);
     is( $out, "", 'Not matching partial lines with -x enabled' );
 
-    ($in, $out, $err, $exit) = run_with_input(['-w', 'cuatro'], $input);
+    ($in, $out, $err, $exit) = run_with_input(['-x', 'cuatro'], $input);
     is( $out, "cuatro\n", '...but match using full line' );
 }
 
