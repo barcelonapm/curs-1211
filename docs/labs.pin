@@ -15,8 +15,16 @@ https://github.com
 -- [text-align=left]
 <u>test driven learning</u>
 
+prove [-v] t/00_prereqs.t
 prove [-v] t/lab1.t
 prove [-v] t/lab2.t
+-- [text-align=left]
+<u>errors</u>
+
+die "text\\n";
+
+print STDERR "text\\n";
+exit 1;
 -- [text-align=left]
 <u>lab1</u>
 
