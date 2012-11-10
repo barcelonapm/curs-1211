@@ -2,6 +2,9 @@
 
 # lab2.pl - Example implementation for perl curs second practice.
 
+use strict;
+use warnings;
+
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
 my $usage_options = << "USAGE";
@@ -17,11 +20,11 @@ my %validoptions = (
   '--help' => 'Help',
 );
 
-while (substr($ARGV[0], 0, 1) eq '-'){
+while (@ARGV && substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
-        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
-                     $usage, $usage_advice;
-        exit 1;
+        die "$0: unrecognized option '$ARGV[0]'\n"
+          . $usage
+          . $usage_advice;
     } else {
         $args{ $ARGV[0] } = 1;
         shift @ARGV
@@ -39,8 +42,7 @@ if ($args{'--help'}){
 }
 
 if (not @ARGV) {
-    print STDERR $usage, $usage_advice;
-    exit 1;
+    die $usage . $usage_advice;
 }
 
 # Failing anyway since we do not know how to look for pattern yet

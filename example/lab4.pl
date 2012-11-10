@@ -1,6 +1,13 @@
 #!/usr/bin/env perl
 
-# lab3.pl - Example implementation for perl curs third practice.
+# lab4.pl - Example implementation for perl curs 4th lab.
+
+use strict;
+use warnings;
+
+use FindBin qw($Bin);
+use lib "$Bin/lib4";
+use Grep qw( scan_input );
 
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
@@ -13,17 +20,17 @@ my %validoptions = (
   '-V' => 'version info',
   '-c' => 'only print a count of matching lines per FILE',
   '-n' => 'print line number with output lines',
-  '-P' => 'PATTERN is a Perl regular expression',
+  '-v' => 'select non-matching lines',
 );
-for my $opt ( '--help', '-V', '-c', '-n', '-P' ) {
+for my $opt ( '--help', '-V', '-c', '-n', '-v' ) {
     $usage_options .= "$opt $validoptions{$opt}\n";
 }
 
-while (substr($ARGV[0], 0, 1) eq '-'){
+while (@ARGV && substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
-        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
-                     $usage, $usage_advice;
-        exit 1;
+        die "$0: unrecognized option '$ARGV[0]'\n"
+          . $usage 
+          . $usage_advice;
     } else {
         $args{ $ARGV[0] } = 1;
         shift @ARGV
@@ -41,23 +48,42 @@ if ($args{'--help'}){
 }
 
 if (not @ARGV) {
-    print STDERR $usage, $usage_advice;
-    exit 1;
+    die $usage . $usage_advice;
 }
 
 # Getting nexta parameter, PATTERN.
 my $pattern = shift @ARGV;
 
 # All ready!, starting to filter input
-my $found=0;
-while (my $line = <STDIN>){
-    if (0 <= index($line,$pattern)) {
-        $found++; 
-        $line = "$.:". $line if $args{'-n'};
-        print $line unless $args{'-c'};
+my $matches = scan_input( \*STDIN, sub { 
+    my $line = shift;
+    if ($args{'-v'}) {
+        if ( 0 > index($line,$pattern)) {
+            return $pattern;
+        }
+    }
+    else {
+        if ( 0 <= index($line,$pattern)) {
+            return $pattern;
+        }
+    }
+
+    return undef;
+});
+
+# Ok, time to print output
+my $found = scalar @$matches;
+if ( $args{'-c'} ) {
+    print "$found\n";
+}
+else {
+    for my $match ( @$matches ) {
+        my $line = $match->{text};
+        if ($args{'-n'}) {
+            $line = $match->{line_nr} . ":$line";
+        }
+        print $line;
     }
 }
-
-print "$found\n" if $args{'-c'};
 
 exit !$found;

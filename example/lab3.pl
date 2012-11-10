@@ -2,6 +2,9 @@
 
 # lab3.pl - Example implementation for perl curs third practice.
 
+use strict;
+use warnings;
+
 # Prepare help message to be user around
 my $usage = "Usage: $0 [OPTION]... PATTERN [FILE]...\n";
 my $usage_advice = "Try `$0 --help' for more information.\n";
@@ -17,11 +20,11 @@ for my $opt ( '--help', '-V', '-c' ) {
     $usage_options .= "$opt $validoptions{$opt}\n";
 }
 
-while (substr($ARGV[0], 0, 1) eq '-'){
+while (@ARGV && substr($ARGV[0], 0, 1) eq '-'){
     if (not exists $validoptions{ $ARGV[0] }){
-        print STDERR "$0: unrecognized option '$ARGV[0]'\n",
-                     $usage, $usage_advice;
-        exit 1;
+        die "$0: unrecognized option '$ARGV[0]'\n"
+          . $usage
+          . $usage_advice;
     } else {
         $args{ $ARGV[0] } = 1;
         shift @ARGV
@@ -39,8 +42,7 @@ if ($args{'--help'}){
 }
 
 if (not @ARGV) {
-    print STDERR $usage, $usage_advice;
-    exit 1;
+    die $usage . $usage_advice;
 }
 
 # Getting nexta parameter, PATTERN.
@@ -51,7 +53,9 @@ my $found=0;
 while (my $line = <STDIN>){
     if (0 <= index($line,$pattern)) {
         $found++; 
-        print $line unless $args{'-c'};
+        if (not $args{'-c'}) {
+            print $line;
+        }
     }
 }
 

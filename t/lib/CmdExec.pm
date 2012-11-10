@@ -1,5 +1,6 @@
 package CmdExec;
 use strict;
+use warnings;
 use v5.10;
 use IPC::Run3;
 use Test::More;

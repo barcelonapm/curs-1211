@@ -1,7 +1,10 @@
+use strict;
+use warnings;
+
 use FindBin qw/$Bin/;
 use lib "$Bin/lib";
 use CmdExec;
-use Test::More;
+use Test::More tests => 3;
 
 use File::Slurp;
 my $input = read_file("$Bin/test_data/data01");
@@ -14,6 +17,4 @@ is ($out, $exp, "Line found");
 
 ($in, $out, $err, $exit) = run_with_input(['-c', 'udev'], $input);
 is ($out, "3\n", "Count OK");
-
-done_testing;
 
