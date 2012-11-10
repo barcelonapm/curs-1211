@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More;
+use Test::More tests => 5;
 use FindBin qw($Bin);
 use lib "$Bin/lib";
 use CmdExec;
@@ -35,6 +35,4 @@ subtest 'Run command with argument' => sub {
     is  ($out, '', "No output in STDOUT");
     isnt($exit, 0, "Exit code is not 0");
 };
-
-done_testing;
 
