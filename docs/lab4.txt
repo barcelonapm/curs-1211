@@ -1,0 +1,86 @@
+Test 1:
+    - 'grep --help' ha de donar informació sobre l'opció -n
+
+
+Test 2:
+    - 'grep --help' ha de donar informació sobre l'opció -v
+
+
+Test 3:
+    - En utilitzar l'opció -n, no ha d'haver errors
+
+
+Test 4:
+    - './grep.pl -n 570 < t/test_data/data01' ha de donar el següent output:
+174:[    0.570249] NMI watchdog disabled (cpu0): hardware events not enabled
+175:[    0.570535] Brought up 1 CPUs
+176:[    0.570619] Total of 1 processors activated (3666.00 BogoMIPS).
+673:[    1.475703] pci 0000:00:17.2: PCI bridge to [bus 15-15]
+933:[    1.604570] pcieport 0000:00:18.6: setting latency timer to 64
+
+
+Test 5:
+    - './grep.pl -n HIGHMEM < t/test_data/data01' ha de retornar:
+72:[    0.000000] 0MB HIGHMEM available.
+
+
+Test 6:
+    - './grep.pl -n LOWMEM < t/test_data/data01' ha de retornar:
+73:[    0.000000] 512MB LOWMEM available.
+
+
+Test 7:
+    - 'echo -e "uno\ndos\ntres\ncuatro\ncinco" | ./grep.pl -v o' ha de retornar:
+tres
+
+
+Test 8:
+    - 'echo -e "uno\ndos\ntres\ncuatro\ncinco" | ./grep.pl -v c' ha de retornar:
+uno
+dos
+tres
+
+
+Test 9:
+    - haciendo un 'use Grep;' en grep.pl, el programa no debe morir
+
+
+Test 10:
+    - El módulo Grep.pm debe implementar la función scan_input
+
+
+
+
+
+
+Los siguientes tests hacen comprobaciones sobre una llamada a la función
+"scan_input" del módulo Grep.
+Dicha función debe recibir como parámetros:
+  1- Un filehandle de un fichero que contenga:
+uno
+dos
+tres
+cuatro
+cinco
+seis
+  2- La siguiente subrutina: sub { return shift =~ /o/ ? 'o' : undef; })
+
+Test 11:
+    - La llamada a la función scan_input devuelve algún valor
+
+
+Test 12:
+    - La función scan_input del módulo Grep retorna un ARRAY REF
+
+
+Test 13:
+    - La función scan_input retorna la siguiente estructura de datos:
+[
+    { 'text' => "uno\n",    'match' => 'o', 'line_nr' => '1' },
+    { 'text' => "dos\n",    'match' => 'o', 'line_nr' => '2' },
+    { 'text' => "cuatro\n", 'match' => 'o', 'line_nr' => '4' },
+    { 'text' => "cinco\n",  'match' => 'o', 'line_nr' => '5' }
+]
+
+
+

@@ -1,0 +1,16 @@
+Test 1:
+    - Executar './grep.pl '00:0c:29:9d:fb:d8' < ../t/test_data/data01'
+    - l'exit code (echo $?) ha de ser 0
+
+
+Test 2:
+    - Executar './grep.pl '00:0c:29:9d:fb:d8' < ../t/test_data/data01'
+    - Ha de donar aquest output:
+[    3.908124] pcnet32: PCnet/PCI II 79C970A at 0x2000, 00:0c:29:9d:fb:d8 assigned IRQ 18
+
+
+Test 3:
+    - Executar './grep.pl -c '00:0c:29:9d:fb:d8' < ../t/test_data/data01'
+    - Ha de donar el número de línies que fan match:
+1
+
